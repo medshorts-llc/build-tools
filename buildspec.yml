@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:
+    commands:
+      - chmod +x ./build/run_pre_build.sh
+      - chmod +x ./build/run_build.sh
+      - chmod +x ./build/build.sh
+      - chmod +x ./build/deploy.sh
+      - ./build/run_pre_build.sh
+  build:
+    commands:
+      - ./build/run_build.sh
+  post_build:
+    commands:
+      - echo Build completed on `date`
