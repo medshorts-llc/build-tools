@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 echo "Conjuring environment files for all matched deployment targets..."
-python build/gen_build_env.py $CODEBUILD_WEBHOOK_HEAD_REF
+python build-tools/gen_build_env.py $CODEBUILD_WEBHOOK_HEAD_REF
 
 for fname in **/.build.*.env; do
+    cd $CODEBUILD_SRC_DIR
     if [ -f "$fname" ]; then
         set -a
         . $fname
