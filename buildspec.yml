@@ -13,6 +13,7 @@ phases:
       - ./build-tools/run_pre_build.sh
   build:
     commands:
+      - ./build-tools/run_test.sh
       - ./build-tools/run_build.sh
   post_build:
     commands:
