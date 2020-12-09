@@ -8,10 +8,10 @@ for fname in **/.build.*.env; do
     if [ -f "$fname" ]; then
         set -a
         . $fname
-        cat $fname
         set +a
 
         echo Running build hook
+        ./build/run_test.sh
         ./build/build.sh
 
         cd $CODEBUILD_SRC_DIR
