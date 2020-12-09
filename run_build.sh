@@ -6,9 +6,12 @@ python build-tools/gen_build_env.py $CODEBUILD_WEBHOOK_HEAD_REF
 for fname in **/.build.*.env; do
     cd $CODEBUILD_SRC_DIR
     if [ -f "$fname" ]; then
+
         set -a
         . $fname
         set +a
+
+        $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com)
 
         echo Running build hook
         ./build/test.sh
