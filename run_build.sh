@@ -8,6 +8,7 @@ for fname in **/.build.*.env; do
     if [ -f "$fname" ]; then
         set -a
         . $fname
+        cat $fname
         set +a
 
         echo Running build hook
