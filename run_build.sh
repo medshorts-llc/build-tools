@@ -14,7 +14,7 @@ for fname in **/.build.*.env; do
         $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com)
 
         echo Running build hook
-        ./build/test.sh
+        ./build/test.sh || exit 1
         ./build/build.sh
 
         cd $CODEBUILD_SRC_DIR
