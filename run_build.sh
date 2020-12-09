@@ -3,10 +3,8 @@
 echo "Conjuring environment files for all matched deployment targets..."
 python build-tools/gen_build_env.py $CODEBUILD_WEBHOOK_HEAD_REF
 
-if [ "$SHOULD_TEST" = "YES" ]; then
-    . api/.test.env
-    ./build/test.sh || exit 1
-fi
+. api/.test.env
+./build/test.sh || exit 1
 
 for fname in **/.build.*.env; do
     cd $CODEBUILD_SRC_DIR
