@@ -11,7 +11,7 @@ for fname in **/.build.*.env; do
         set +a
 
         echo Running build hook
-        ./build/run_test.sh
+        ./build/test.sh
         ./build/build.sh
 
         cd $CODEBUILD_SRC_DIR
