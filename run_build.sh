@@ -3,6 +3,7 @@
 echo "Conjuring environment files for all matched deployment targets..."
 python build-tools/gen_build_env.py $CODEBUILD_WEBHOOK_HEAD_REF
 
+$(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com)
 . api/.test.env
 ./build/test.sh || exit 1
 
@@ -13,8 +14,6 @@ for fname in **/.build.*.env; do
         set -a
         . $fname
         set +a
-
-        $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com)
 
         echo Running build hook
         ./build/build.sh
