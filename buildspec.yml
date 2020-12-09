@@ -6,7 +6,7 @@ phases:
       docker: 18
   pre_build:
     commands:
-      - ./build-tools/run_pre_build.sh
+      - bash ./build-tools/run_pre_build.sh
   build:
     commands:
       - ./build-tools/run_build.sh
