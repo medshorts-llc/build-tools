@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Conjuring environment files for all matched deployment targets..."
-python build-tools/gen_build_env.py $GITHUB_REF
+python3 build-tools/gen_build_env.py $GITHUB_REF
 
 $(aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 392331991905.dkr.ecr.us-west-2.amazonaws.com)
 
