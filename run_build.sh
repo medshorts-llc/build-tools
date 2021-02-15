@@ -24,7 +24,7 @@ for fname in **/.build.*.env; do
 
         if [ "$SHOULD_DEPLOY" = "YES" ]; then
             echo "Running deploy hook"
-            # ./build/deploy.sh
+            ./build/deploy.sh
         fi
     fi
     SHOULD_DEPLOY="NO"
