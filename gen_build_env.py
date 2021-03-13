@@ -30,6 +30,8 @@ def write_build_env_files(branch_name):
 def write_build_env_file(env, index):
     if 'K8S_NAME' in env:
         fname = f'api/.build.{env["K8S_NAME"]}.env'
+    elif 'BUILD_PATH' in env:
+        fname = f'{env["BUILD_PATH"]}.build.{env["ANGULAR_CONFIG"]}.env'
     else:
         fname = f'medshorts-app/.build.{env["ANGULAR_CONFIG"]}.env'
 
