@@ -1,0 +1,10 @@
+{
+    "develop": [
+        {
+            "S3_ORIGIN": "<S3_ORIGIN>",
+            "DISTRIBUTION_ID": "<CLOUDFRONT_DIST_ID>",
+            "ANGULAR_CONFIG": "<ANGULAR_CONFIG_TO_USE>",
+            "SHOULD_DEPLOY": "YES"
+        }
+    ]
+}

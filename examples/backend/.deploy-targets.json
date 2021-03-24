@@ -1,0 +1,13 @@
+{
+    "develop": [
+        {
+            "IMAGE_REPO_NAME": "<ECR_REPO_NAME>",
+            "WHITELABEL_TAG": "<ECR_TAG>",
+            "CLUSTER_NAME": "lower-eks",
+            "K8S_NAME": "<K8S_NAME>",
+            "AWS_ACCOUNT_ID": "392331991905",
+            "AWS_REGION": "us-west-2",
+            "SHOULD_DEPLOY": "YES"
+        }
+    ]
+}

@@ -1,0 +1,49 @@
+name: Build
+on:
+  push:
+    branches:
+      - develop
+      - master
+      - ms2.0/qa
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: configure git
+        run: git config --global init.defaultBranch master
+      - name: clone <PROJECT>
+        uses: actions/checkout@v2
+        with:
+          repository: medshorts-llc/<project>
+          path: ./
+          ref: ${{ github.head_ref }}
+          ssh-key: ${{ secrets.ORG_SSH_KEY }}
+          persist-credentials: true
+
+      - name: clone medipy
+        uses: actions/checkout@v2
+        with:
+          repository: medshorts-llc/medipy
+          path: ./api/medipy
+          ref: master
+          ssh-key: ${{ secrets.ORG_SSH_KEY }}
+          persist-credentials: true
+
+      - name: checkout submodules
+        run: |
+          git submodule init
+          git submodule update
+
+      - name: Build
+        run: | 
+          export AWS_DEFAULT_REGION=us-west-2
+          export AWS_ACCESS_KEY_ID=${{ secrets.ORG_AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.ORG_AWS_SECRET_ACCESS_KEY }}
+          chmod +x ./build-tools/run_pre_build.sh
+          chmod +x ./build-tools/run_build.sh
+          chmod +x ./build/build.sh
+          chmod +x ./build/deploy.sh
+          ./build-tools/run_pre_build.sh
+          ./build-tools/run_test.sh
+          ./build-tools/run_build.sh
