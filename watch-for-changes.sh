@@ -1,6 +1,6 @@
 sleep 10
 while true
 do
-    inotifywait --event modify --event attrib --event move --event create --event delete -r ./**/*.py && pkill -HUP gunicorn
+    inotifywait -e modify -e attrib -e move -e create -e delete --exclude '.*(\.pyc)' -r ./ && pkill -HUP gunicorn
     sleep 5
 done
