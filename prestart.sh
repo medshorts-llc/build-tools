@@ -34,22 +34,25 @@ function wait-for-mysql {
 
 function create-database {
     if [ "$ENV" != "development" ]; then
-    echo "Creating DB..."
-    mysql -h"$MYSQL_HOST" -u"$MYSQL_USERNAME" -p"$MYSQL_PASSWORD" -e "CREATE DATABASE $MYSQL_DB" || true
+        echo "Creating DB..."
+        mysql -h"$MYSQL_HOST" -u"$MYSQL_USERNAME" -p"$MYSQL_PASSWORD" -e "CREATE DATABASE $MYSQL_DB" || true
     fi
 }
 
 function migrate-database {
     echo "Running db migrations..."
+    . /venv/bin/activate
     flask db upgrade || true
 }
 
 function start-celery {
-    rm /tmp/da-beatus.pid /tmp/beatschedulerdb || true
-    mkdir -p /var/log/celery
-    mkdir -p /var/run/celery
-    celery --app=src:celery worker -E --time-limit=1000 --loglevel=INFO --concurrency=8 --logfile=/var/log/celery/worker1%I.log --pidfile=/var/run/celery/worker1.pid --hostname=worker1@%h  &
-    celery --app=src:celery beat --pidfile=/tmp/da-beatus.pid -s /tmp/beatschedulerdb -l INFO --logfile=/tmp/beat.log &
+    if [[ -x $CELERY_APP ]]; then
+        rm /tmp/da-beatus.pid /tmp/beatschedulerdb || true
+        mkdir -p /var/log/celery
+        mkdir -p /var/run/celery
+        celery --app=$CELERY_APP worker -E --time-limit=1000 --loglevel=INFO --concurrency=8 --logfile=/var/log/celery/worker1%I.log --pidfile=/var/run/celery/worker1.pid --hostname=worker1@%h  &
+        celery --app=$CELERY_APP beat --pidfile=/tmp/da-beatus.pid -s /tmp/beatschedulerdb -l INFO --logfile=/tmp/beat.log &
+    fi
 }
 
 function start-service {
@@ -70,5 +73,8 @@ wait-for-mysql
 create-database
 migrate-database
 
-start-celery
+if [ -x $START_CELERY ]; then
+    start-celery
+fi
+
 start-service
