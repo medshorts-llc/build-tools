@@ -26,7 +26,7 @@ function install-requirements {
 function wait-for-mysql {
     MYSQL_HOST=$DB_SERVICE_HOST
 
-    while ! mysqladmin ping -h"$MYSQL_HOST" --silent; do
+    while ! mysqladmin --connect-timeout=2 ping -h"$MYSQL_HOST" --silent; do
         echo "Waiting for mysql..."
         sleep 1
     done

@@ -14,7 +14,6 @@ def send_message(channel, text):
 
     return make_request('/chat.postMessage', payload)
 
-
 def make_request(endpoint, payload, method='post'):
     headers = {
         'Authorization': 'Bearer {token}'.format(token=SLACK_TOKEN),
