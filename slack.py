@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 # TODO: Regenerate and place in secrets manager
 SLACK_TOKEN = 'xoxb-44312198678-1506365813828-RTKYelFGvBprCjWTGcLbis6N'
 SLACK_API_URL = 'https://slack.com/api'

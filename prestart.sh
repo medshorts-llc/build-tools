@@ -72,9 +72,5 @@ install-requirements
 wait-for-mysql
 create-database
 migrate-database
-
-if [ -x $START_CELERY ]; then
-    start-celery
-fi
-
+start-celery
 start-service
