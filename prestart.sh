@@ -1,11 +1,9 @@
 #! /usr/bin/env bash
 
+
 function load-environment {
     if [ "$ENV" = "development" ]; then
         . /app/.$ENV.env
-
-        python -m venv /venv
-        . /venv/bin/activate
     else
         echo "LOADING SECRETS"
         until python scripts/load_secrets.py; do
@@ -18,7 +16,8 @@ function load-environment {
 }
 
 function install-requirements {
-    while ! pip install -r **/medipy/requirements.txt && ! pip install -r requirements.txt; do
+    pip install bcrypt==3.2.0
+    while ! pip install -r requirements.txt; do
         echo "Failed to install requirements.txt"
     done
 }
@@ -41,7 +40,7 @@ function create-database {
 
 function migrate-database {
     echo "Running db migrations..."
-    . /venv/bin/activate
+    cd /app
     flask db upgrade || true
 }
 
@@ -58,7 +57,7 @@ function start-celery {
 function start-service {
     if [ "$ENV" = "development" ]; then
         if [ -z "$KUBERNETES_SERVICE_HOST" ]; then
-            echo "Running runserver.py..." 
+            echo "Running runserver.py..."
             python runserver.py
         else
             bash build-tools/watch-for-changes.sh &
