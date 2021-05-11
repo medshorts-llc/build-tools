@@ -45,11 +45,11 @@ function migrate-database {
 }
 
 function start-celery {
-    if [[ -x $CELERY_APP ]]; then
+    if [[ -n $CELERY_APP ]]; then
         rm /tmp/da-beatus.pid /tmp/beatschedulerdb || true
         mkdir -p /var/log/celery
         mkdir -p /var/run/celery
-        celery --app=$CELERY_APP worker -E --time-limit=1000 --loglevel=INFO --concurrency=8 --logfile=/var/log/celery/worker1%I.log --pidfile=/var/run/celery/worker1.pid --hostname=worker1@%h  &
+        celery --app=$CELERY_APP worker -E --time-limit=1000 --loglevel=INFO --concurrency=2 --logfile=/var/log/celery/worker1%I.log --pidfile=/var/run/celery/worker1.pid --hostname=worker1@%h  &
         celery --app=$CELERY_APP beat --pidfile=/tmp/da-beatus.pid -s /tmp/beatschedulerdb -l INFO --logfile=/tmp/beat.log &
     fi
 }
