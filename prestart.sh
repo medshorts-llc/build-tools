@@ -17,6 +17,7 @@ function load-environment {
 
 function install-requirements {
     pip install bcrypt==3.2.0
+    pip install python-dotenv
     while ! pip install -r requirements.txt; do
         echo "Failed to install requirements.txt"
     done
