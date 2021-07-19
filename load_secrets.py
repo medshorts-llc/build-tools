@@ -24,4 +24,4 @@ if __name__ == '__main__':
     api_secrets = fetch_secret(secret_id='internal-api-key-lower')
     with open('/app/.secrets.env', 'a') as secrets_file:
         for key in api_secrets:
-            secrets_file.write('export {key}={value}\n'.format(key=key, value=secrets[key]))
+            secrets_file.write('export {key}={value}\n'.format(key=key, value=api_secrets[key]))
