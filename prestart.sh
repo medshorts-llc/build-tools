@@ -6,7 +6,7 @@ function load-environment {
         . /app/.$ENV.env
     else
         echo "LOADING SECRETS"
-        until python scripts/load_secrets.py; do
+        until python /app/build-tools/load_secrets.py; do
             echo "Loading secrets failed... retrying"
             sleep 10
         done
@@ -18,6 +18,7 @@ function load-environment {
 function install-requirements {
     pip install bcrypt==3.2.0
     pip install python-dotenv
+    pip install elasticsearch
     while ! pip install -r requirements.txt; do
         echo "Failed to install requirements.txt"
     done
