@@ -57,14 +57,7 @@ function start-celery {
 }
 
 function start-service {
-    if [ "$ENV" = "development" ]; then
-        if [ -z "$KUBERNETES_SERVICE_HOST" ]; then
-            echo "Running runserver.py..."
-            python runserver.py
-        else
-            bash build-tools/watch-for-changes.sh &
-        fi
-    fi
+    bash /app/build-tools/watch-for-changes.sh &
 }
 
 load-environment

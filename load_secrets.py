@@ -1,5 +1,6 @@
 import boto3
 import os
+from glob import glob
 import json
 
 
@@ -13,15 +14,13 @@ def fetch_secret(secret_id):
     return json.loads(secrets)
 
 
+def fetch_k8s_secrets():
+    with open('/app/.secrets.env', 'w') as f:
+        for secret_file in glob('/app/secrets/*'):
+            with open(secret_file) as s:
+                value = s.read().strip('"')
+                f.write(f'export {secret_file.split("/")[-1]}={value}\n')
+
+
 if __name__ == '__main__':
-    if os.getenv('ENV') != 'development':
-        secrets = fetch_secret(secret_id=os.getenv('ENV_SECRET_NAME'))
-
-        with open('/app/.secrets.env', 'w') as secrets_file:
-            for key in secrets:
-                secrets_file.write('export {key}={value}\n'.format(key=key, value=secrets[key]))
-
-    api_secrets = fetch_secret(secret_id='internal-api-key-lower')
-    with open('/app/.secrets.env', 'a') as secrets_file:
-        for key in api_secrets:
-            secrets_file.write('export {key}={value}\n'.format(key=key, value=api_secrets[key]))
+    fetch_k8s_secrets()
