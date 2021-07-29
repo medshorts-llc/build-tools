@@ -2,17 +2,13 @@
 
 
 function load-environment {
-    if [ "$ENV" = "development" ]; then
-        . /app/.$ENV.env
-    else
-        echo "LOADING SECRETS"
-        until python /app/build-tools/load_secrets.py; do
-            echo "Loading secrets failed... retrying"
-            sleep 10
-        done
+    echo "LOADING SECRETS"
+    until python /app/build-tools/load_secrets.py; do
+        echo "Loading secrets failed... retrying"
+        sleep 10
+    done
 
-        . ./.secrets.env
-    fi
+    . ./.secrets.env
 }
 
 function install-requirements {
@@ -57,7 +53,8 @@ function start-celery {
 }
 
 function start-service {
-    bash /app/build-tools/watch-for-changes.sh &
+    # bash /app/build-tools/watch-for-changes.sh &
+    echo ""
 }
 
 load-environment
