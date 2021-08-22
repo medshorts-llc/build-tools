@@ -1,7 +1,6 @@
 source ./tools/constants.sh
 
 branch_name=$(git rev-parse --abbrev-ref HEAD)
-K8S_NAMESPACE=$(cat services/$TARGET_SERVICE/.deploy-targets.json | jq ".$branch_name[].K8S_NAMESPACE" -r)
 
 if [ ! -d k8s ]; then
     mkdir k8s

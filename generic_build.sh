@@ -12,6 +12,7 @@ sudo install skaffold /usr/local/bin/
 
 # docker login -u travisjhoffman -p $GITHUB_TOKEN ghcr.io
 export TARGET_SERVICE="${GITHUB_REPOSITORY/medshorts-llc\/}"
+echo $TARGET_SERVICE
 
 export SKAFFOLD_DEFAULT_REPO=ghcr.io
 export SKAFFOLD_VERBOSITY=info
@@ -24,8 +25,12 @@ export SKAFFOLD_INTERACTIVE=false
 
 cd $GITHUB_WORKSPACE/medigi-skaffold
 
+cd services/$TARGET_SERVICE
 branch_name=$(git rev-parse --abbrev-ref HEAD)
-export SKAFFOLD_NAMESPACE=$(cat services/$TARGET_SERVICE/.deploy-targets.json | jq ".$branch_name[].K8S_NAMESPACE" -r)
+echo $branch_name
+cd -
+
+export SKAFFOLD_NAMESPACE=$(cat services/$TARGET_SERVICE/.deploy-targets.json | jq --arg branch_name "$branch_name" '.[$branch_name] | .[0].K8S_NAMESPACE' -r)
 export K8S_NAMESPACE=$SKAFFOLD_NAMESPACE
 
 bash $SCRIPT_DIR/k8s-templates.sh
