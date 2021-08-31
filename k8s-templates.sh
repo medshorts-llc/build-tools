@@ -8,7 +8,6 @@ fi
 
 cp k8s-templates/* k8s/
 
-
 for svc in "${SERVICE_NAMES[@]}"
 do
     sed -e "s/{{ k8s_namespace }}/$K8S_NAMESPACE/g" k8s-templates/"$svc".yaml > k8s/"$svc".yaml
