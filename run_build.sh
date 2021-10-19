@@ -7,52 +7,63 @@ $(aws ecr get-login-password --region us-west-2 | docker login --username AWS --
 
 npm install -g tc-cli
 
-trigger_target=""
 for fname in **/.build.*.env; do
     if [ -f "$fname" ]; then
-
-        set -a
-        . $fname
-        set +a
-
-        echo Running build hook
-        ./build/build.sh
-
         set -a
         . $fname
         set +a
 
         if [ "$SHOULD_DEPLOY" = "YES" ]; then
-            echo "Running deploy hook"
-            ./build/deploy.sh
-
             if [ "$TESTCRAFT" = "YES" ]; then
-                echo "Running TestCraft suite..."
+                python3 build-tools/gen_build_env.py $TEST_TARGET
 
-                result=$(tc-cli run -u travis@medshorts.com -t DFA12339B3934E65A24BE08FDC67086E -p "Production" -v "Base" -s "$TESTCRAFT_SUITE" -l "Chrome 1920x1080" -e "$TESTCRAFT_ENV" | grep "Test Result: Success")
+                set -a
+                . **/.build.$TEST_TARGET_ENV.env
+                set +a
+
+                echo Running build hook
+                ./build/build.sh
+
+                set -a
+                . **/.build.$TEST_TARGET_ENV.env
+                set +a
+
+                echo "Deploying to test environment..."
+                ./build/deploy.sh
+
+                result=$(tc-cli run -u travis@medshorts.com -t DFA12339B3934E65A24BE08FDC67086E -p "Medshorts" -v "Base" -s "$TESTCRAFT_SUITE" -l "Chrome" -e "$TESTCRAFT_ENV" | grep "Test Result: Success")
 
                 if [ -z "$result" ]; then
                     echo "Tests failed! Post-test deploy aborted."
                 else
-                    echo "Tests passed! Post-test deploying to $TRIGGER_TARGET targets."
-                    python3 build-tools/gen_build_env.py $TRIGGER_TARGET
-
+                    echo "Tests passed! Building..."
                     set -a
-                    . **/.build.$TRIGGER_TARGET_ENV.env
+                    . $fname
                     set +a
 
                     echo Running build hook
                     ./build/build.sh
 
                     set -a
-                    . **/.build.$TRIGGER_TARGET_ENV.env
+                    . $fname
                     set +a
 
-                    if [ "$SHOULD_DEPLOY" = "YES" ]; then
-                        echo "Running deploy hook"
-                        ./build/deploy.sh
-                    fi
+                    echo "Deploying..."
+                    ./build/deploy.sh
                 fi
+            else
+                set -a
+                . $fname
+                set +a
+
+                echo Running build hook
+                ./build/build.sh
+
+                set -a
+                . $fname
+                set +a
+
+                ./build/deploy.sh
             fi
         fi
     fi
